@@ -31,6 +31,7 @@ final pageTransition = PageTransitionsTheme(
 );
 
 final ThemeData theme = ThemeData(
+  fontFamily: 'Rubik',
   primaryColor: accentColor,
   accentColor: accentColor,
   scaffoldBackgroundColor: surfaceColor,
