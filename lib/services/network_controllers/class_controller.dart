@@ -36,4 +36,14 @@ class ClassController extends GetxController {
       }
     }
   }
+
+  var classesObs = ApiResponse<ClassesResponse>().obs;
+
+  void getClassesForACourse(String courseCode) async {
+    classesObs.value = ApiResponse<ClassesResponse>.loading();
+
+    final response = await _repo.getClassesForCourse(courseCode);
+    classesObs.value = response;
+    update();
+  }
 }
