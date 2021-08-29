@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vitclasses/presentation/screens/courses/courses_screen.dart';
 import 'package:vitclasses/presentation/screens/map/map_screen.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _BaseScreenState extends State<BaseScreen> {
   void initState() {
     super.initState();
     _screens.add(Container());
-    _screens.add(Container());
+    _screens.add(CoursesScreen());
     _screens.add(MapScreen());
   }
 

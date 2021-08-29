@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:vitclasses/data/models/api_response.dart';
 import 'package:vitclasses/data/models/classes.dart';
+import 'package:vitclasses/data/models/courses.dart';
 import 'package:vitclasses/data/repositories/class_repository.dart';
 
 class ClassController extends GetxController {
@@ -18,6 +19,20 @@ class ClassController extends GetxController {
         mapClasses.addAll(response.data!.classes!);
         mapClasses.refresh();
         log(mapClasses.toString());
+      }
+    }
+  }
+
+  var courses = <Course>[].obs;
+
+  void getAllCourses() async {
+    final response = await _repo.getAllCourses();
+    if (response.status == Status.COMPLETED) {
+      if (response.data!.courses != null) {
+        courses.clear();
+        courses.addAll(response.data!.courses!);
+        courses.refresh();
+        log(courses.toString());
       }
     }
   }
