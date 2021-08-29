@@ -1,5 +1,8 @@
 # Motorq Task App
 
+### Demo Video
+[https://youtu.be/ZjJKRrejV2c](https://youtu.be/ZjJKRrejV2c)
+
 ### The APK for the app in attached in the release section.
 
 ### App Screenshots
