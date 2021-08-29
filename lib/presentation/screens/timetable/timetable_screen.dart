@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:vitclasses/data/models/api_response.dart';
+import 'package:vitclasses/presentation/screens/auth/auth_screen.dart';
 import 'package:vitclasses/presentation/widgets/snackbar.dart';
 import 'package:vitclasses/services/network_controllers/class_controller.dart';
+import 'package:vitclasses/services/utils/shared_prefs.dart';
 
 class TimetableScreen extends StatefulWidget {
   const TimetableScreen({Key? key}) : super(key: key);
@@ -33,6 +35,22 @@ class _TimetableScreenState extends State<TimetableScreen> {
             fontSize: 18,
           ),
         ),
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            child: TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => AuthScreen()),
+                  (route) => false,
+                );
+                SharedPrefs.saveLoggedInStatus(false);
+              },
+              child: Text("Logout"),
+            ),
+          ),
+        ],
       ),
       body: Obx(
         () {
