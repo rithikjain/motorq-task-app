@@ -46,4 +46,19 @@ class ClassController extends GetxController {
     classesObs.value = response;
     update();
   }
+
+  var enrollObs = ApiResponse<bool>().obs;
+
+  Future<void> enrollStudent(String classID) async {
+    enrollObs.value = ApiResponse<bool>.loading();
+
+    final response = await _repo.enrollStudent(classID);
+    enrollObs.value = response;
+    update();
+  }
+
+  void resetEnrollStudent() {
+    enrollObs.value = ApiResponse<bool>();
+    update();
+  }
 }
