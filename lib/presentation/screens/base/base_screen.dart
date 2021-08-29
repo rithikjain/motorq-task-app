@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vitclasses/presentation/screens/courses/courses_screen.dart';
 import 'package:vitclasses/presentation/screens/map/map_screen.dart';
+import 'package:vitclasses/presentation/screens/timetable/timetable_screen.dart';
 
 class BaseScreen extends StatefulWidget {
   const BaseScreen({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _BaseScreenState extends State<BaseScreen> {
   @override
   void initState() {
     super.initState();
-    _screens.add(Container());
+    _screens.add(TimetableScreen());
     _screens.add(CoursesScreen());
     _screens.add(MapScreen());
   }

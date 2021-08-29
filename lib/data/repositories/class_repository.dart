@@ -64,6 +64,32 @@ class ClassRepository {
     }
   }
 
+  Future<ApiResponse<ClassesResponse>> getTimetable() async {
+    log("entered getTimetable route");
+    try {
+      final response = await http.get(
+        Uri.parse("$Timetable/${SharedPrefs.getStudentID()}"),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          return ApiResponse.completed(
+            ClassesResponse.fromJson(json.decode(response.body)),
+          );
+        default:
+          return ApiResponse.error("Something went wrong.");
+      }
+    } on SocketException {
+      return ApiResponse.error("Please connect to the internet.");
+    } catch (e) {
+      log(e.toString());
+      return ApiResponse.error("error: ${e.toString()}");
+    }
+  }
+
   Future<ApiResponse<bool>> enrollStudent(String classID) async {
     log("entered enrollStudent route");
     try {
@@ -81,6 +107,33 @@ class ClassRepository {
           );
         case 409:
           return ApiResponse.error("Class clashed with another :(");
+        default:
+          return ApiResponse.error("Something went wrong.");
+      }
+    } on SocketException {
+      return ApiResponse.error("Please connect to the internet.");
+    } catch (e) {
+      log(e.toString());
+      return ApiResponse.error("error: ${e.toString()}");
+    }
+  }
+
+  Future<ApiResponse<bool>> removeStudent(String classID) async {
+    log("entered removeStudent route");
+    try {
+      final response = await http.delete(
+        Uri.parse(
+            "$RemoveStudentCourse/${SharedPrefs.getStudentID()}/$classID"),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          return ApiResponse.completed(
+            true,
+          );
         default:
           return ApiResponse.error("Something went wrong.");
       }

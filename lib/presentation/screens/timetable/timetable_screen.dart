@@ -5,23 +5,20 @@ import 'package:vitclasses/data/models/api_response.dart';
 import 'package:vitclasses/presentation/widgets/snackbar.dart';
 import 'package:vitclasses/services/network_controllers/class_controller.dart';
 
-class ClassesOfferedScreen extends StatefulWidget {
-  final String courseCode;
-
-  const ClassesOfferedScreen({Key? key, required this.courseCode})
-      : super(key: key);
+class TimetableScreen extends StatefulWidget {
+  const TimetableScreen({Key? key}) : super(key: key);
 
   @override
-  _ClassesOfferedScreenState createState() => _ClassesOfferedScreenState();
+  _TimetableScreenState createState() => _TimetableScreenState();
 }
 
-class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
+class _TimetableScreenState extends State<TimetableScreen> {
   final _classController = Get.find<ClassController>();
 
   @override
   void initState() {
     super.initState();
-    _classController.getClassesForACourse(widget.courseCode);
+    _classController.getTimetable();
   }
 
   @override
@@ -29,7 +26,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.courseCode,
+          "Timetable",
           style: TextStyle(
             color: Theme.of(context).accentColor,
             fontWeight: FontWeight.bold,
@@ -40,10 +37,10 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
       body: Obx(
         () {
           var _isLoading =
-              _classController.classesObs.value.status == Status.LOADING;
+              _classController.timetableObs.value.status == Status.LOADING;
           var _isCompleted =
-              _classController.classesObs.value.status == Status.COMPLETED;
-          var _data = _classController.classesObs.value.data;
+              _classController.timetableObs.value.status == Status.COMPLETED;
+          var _data = _classController.timetableObs.value.data;
 
           return (!_isLoading && _isCompleted)
               ? Container(
@@ -53,7 +50,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                     children: [
                       SizedBox(height: 16),
                       Text(
-                        "Tap to enroll in a class.",
+                        "Long press to delete a class.",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -63,18 +60,15 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                         child: Obx(
                           () {
                             var status =
-                                _classController.enrollObs.value.status;
+                                _classController.removeObs.value.status;
 
                             if (status == Status.COMPLETED) {
                               SchedulerBinding.instance!
                                   .addPostFrameCallback((_) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  successSnackbar("Enrolled in this class :)"),
+                                  successSnackbar("Class deleted :)"),
                                 );
-                                _classController.resetEnrollStudent();
-                                _classController.refreshClassesForACourse(
-                                  widget.courseCode,
-                                );
+                                _classController.resetRemoveStudent();
                               });
                             }
 
@@ -85,7 +79,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                                   errorSnackbar(_classController
                                       .enrollObs.value.message!),
                                 );
-                                _classController.resetEnrollStudent();
+                                _classController.resetRemoveStudent();
                               });
                             }
 
@@ -93,7 +87,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                               shrinkWrap: true,
                               itemCount: _data?.classes?.length ?? 0,
                               itemBuilder: (context, index) => GestureDetector(
-                                onTap: () async {
+                                onLongPress: () async {
                                   BuildContext? dialogContext;
                                   showDialog(
                                     context: context,
@@ -120,7 +114,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                                               SizedBox(width: 24),
                                               Expanded(
                                                 child: Text(
-                                                  "Hold up, Enrolling you in the class",
+                                                  "Hold up, Removing you from the class",
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
@@ -135,7 +129,7 @@ class _ClassesOfferedScreenState extends State<ClassesOfferedScreen> {
                                     },
                                   );
 
-                                  await _classController.enrollStudent(
+                                  await _classController.removeStudent(
                                       _data!.classes![index].iD!);
 
                                   Navigator.of(context).pop(dialogContext);

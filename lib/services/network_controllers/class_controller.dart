@@ -47,18 +47,63 @@ class ClassController extends GetxController {
     update();
   }
 
+  void refreshClassesForACourse(String courseCode) async {
+    final response = await _repo.getClassesForCourse(courseCode);
+    classesObs.value = response;
+    update();
+  }
+
   var enrollObs = ApiResponse<bool>().obs;
 
   Future<void> enrollStudent(String classID) async {
     enrollObs.value = ApiResponse<bool>.loading();
 
     final response = await _repo.enrollStudent(classID);
+    if (response.status == Status.COMPLETED) {
+      refreshTimetable();
+    }
     enrollObs.value = response;
     update();
   }
 
   void resetEnrollStudent() {
     enrollObs.value = ApiResponse<bool>();
+    update();
+  }
+
+  var timetableObs = ApiResponse<ClassesResponse>().obs;
+
+  void getTimetable() async {
+    timetableObs.value = ApiResponse<ClassesResponse>.loading();
+
+    final response = await _repo.getTimetable();
+    timetableObs.value = response;
+    update();
+  }
+
+  void refreshTimetable() async {
+    final response = await _repo.getTimetable();
+    timetableObs.value = response;
+    update();
+  }
+
+  var removeObs = ApiResponse<bool>().obs;
+
+  Future<void> removeStudent(String classID) async {
+    removeObs.value = ApiResponse<bool>.loading();
+
+    final response = await _repo.removeStudent(classID);
+    if (response.status == Status.COMPLETED) {
+      timetableObs.value.data!.classes!.removeWhere(
+        (element) => element.iD == classID,
+      );
+    }
+    removeObs.value = response;
+    update();
+  }
+
+  void resetRemoveStudent() {
+    removeObs.value = ApiResponse<bool>();
     update();
   }
 }
